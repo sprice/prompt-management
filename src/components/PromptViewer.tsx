@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Copy } from "lucide-react"
-import { Message } from 'promptl-ai'
+import { Message, MessageContent } from 'promptl-ai'
 import { extractUserPrompt } from "@/lib/utils"
 
 interface PromptViewerProps {
@@ -18,7 +18,24 @@ export function PromptViewer({ content, renderedContent, executePrompt }: Prompt
   const [isExecuting, setIsExecuting] = useState(false)
 
   const filledTemplate = renderedContent
-    .map(msg => `<${msg.role}>${typeof msg.content === 'object' ? JSON.stringify(msg.content, null, 2) : msg.content}</${msg.role}>`)
+    .map(msg => {
+      let messageContent: string = '';
+      const content = msg.content;
+      
+      if (Array.isArray(content)) {
+        messageContent = content
+          .filter((block: MessageContent) => 
+            'type' in block && block.type === 'text' && 'text' in block)
+          .map(block => (block as { text: string }).text)
+          .join('');
+      } else if (typeof content === 'string') {
+        messageContent = content;
+      } else if (typeof content === 'object') {
+        messageContent = JSON.stringify(content, null, 2);
+      }
+
+      return `<${msg.role}>${messageContent}</${msg.role}>`;
+    })
     .join('\n\n')
 
   return (
