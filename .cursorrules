@@ -1,0 +1,58 @@
+# Cursor Rules for LLM Prompt Management Project
+
+## Overview
+This project is built using the following technologies:
+- **Next.js** (with the App Router)
+- **TypeScript**
+- **React**
+- **TailwindCSS**
+- **Shadcn**
+
+The purpose of this project is to manage personal LLM prompts effectively.
+
+## Application Structure
+### Features
+- A **Next.js web application** is provided for:
+  - Viewing available prompts.
+  - Copying prompts for external use.
+  - Executing prompts directly within the app.
+
+### Directory Layout
+- The `prompt` directory organizes your prompts. 
+  - Each prompt has its own **subfolder**, where the folder name serves as the **system name** for that prompt.
+  - Each prompt folder contains:
+    1. A `prompt.md` file: Contains the textual content of the prompt.
+    2. A `config.yml` file: Configures metadata and parameters for the prompt.
+
+## Prompt Management
+This project uses **[PromptL](https://docs.latitude.so/promptl)** for managing and executing prompts.
+
+### `config.yml` File
+Each `config.yml` file defines:
+- **Provider**: Specifies the LLM provider (e.g., OpenAI, Anthropic, etc.).
+- **Model**: Specifies the LLM model to use (e.g., `gpt-4`, `claude-v2`).
+- **Model Parameters**: Includes settings like temperature, max tokens, etc.
+- **PromptL Variables**: Dynamically passed variables for use within the `prompt.md` file.
+
+### Example Structure
+Here’s an example of how your prompt directory might look:
+
+`/prompt/[prompt-name]/prompt.md`
+`/prompt/[prompt-name]/config.yml`
+
+
+### `prompt.md` File
+The `prompt.md` file contains the core text of your prompt. This may include variables, structured as `{{variableName}}`, that will be resolved at runtime based on the configuration in `config.yml`.
+
+---
+
+## Best Practices
+- Keep prompt folders **organized and meaningful** by naming them descriptively.
+- Use **version control** to track changes to your prompts and configurations.
+- Leverage **PromptL variables** for reusability and flexibility across different use cases.
+- Test each prompt thoroughly using the app before deployment to ensure it behaves as expected with the defined `config.yml`.
+
+---
+
+With this structure, you can efficiently manage, edit, and execute prompts while taking full advantage of the technologies and tools integrated into this project.
+
