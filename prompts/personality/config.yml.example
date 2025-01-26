@@ -1,0 +1,57 @@
+provider: openai
+model: o1-preview-2024-09-12
+temperature: 0.7
+name: o1-pro
+user_message: |-
+  A user prompt exploring personality.
+my_seligman_results: |-
+  PmB: X
+  PmG: X
+  PvB: X
+  PvG: X
+  HoB: X
+  PsB: X
+  PsG: X
+  B: X
+  G: X
+  G-B: +X
+my_big5: |-
+  Agreeableness: X
+  Compassion: X
+  Politeness: X
+
+  Conscientiousness: X
+  Industriousness: X
+  Orderliness: X
+
+  Extraversion X
+  Enthusiasm: X
+  Assertiveness: X
+
+  Openness/Intellect: X
+  Openness: X
+  Intellect: X
+
+  Neuroticism: X
+  Withdrawal: X
+  Volatility: X
+other_big5: |-
+  Agreeableness: X
+  Compassion: X
+  Politeness: X
+
+  Conscientiousness: X
+  Industriousness: X
+  Orderliness: X
+
+  Extraversion: X
+  Enthusiasm: X
+  Assertiveness: X
+
+  Openness/Intellect: X
+  Openness: X
+  Intellect: X
+
+  Neuroticism: X
+  Withdrawal: X
+  Volatility: X
