@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Loader2, Play, Copy } from "lucide-react"
+import { Copy } from "lucide-react"
 import { Message } from 'promptl-ai'
+import { extractUserPrompt } from "@/lib/utils"
 
 interface PromptViewerProps {
   content: string;
@@ -14,116 +14,107 @@ interface PromptViewerProps {
 }
 
 export function PromptViewer({ content, renderedContent, executePrompt }: PromptViewerProps) {
-  const [copied, setCopied] = useState<'raw' | 'filled' | null>(null)
-  const [isPending, startTransition] = useTransition()
-  const [result, setResult] = useState<string | null>(null)
+  const [result, setResult] = useState<string>("")
   const [isExecuting, setIsExecuting] = useState(false)
 
-  const filledContent = renderedContent
-    .map(msg => `<${msg.role}>\n${typeof msg.content === 'string' 
-      ? msg.content 
-      : msg.content.map(c => 'text' in c ? c.text : '').join('')}\n</${msg.role}>`)
+  const filledTemplate = renderedContent
+    .map(msg => `<${msg.role}>${msg.content}</${msg.role}>`)
     .join('\n\n')
 
-  const copyToClipboard = async (text: string, type: 'raw' | 'filled') => {
-    startTransition(async () => {
-      await navigator.clipboard.writeText(text)
-      setCopied(type)
-      setTimeout(() => setCopied(null), 2000)
-    })
-  }
-
-  const handleExecute = async () => {
-    setIsExecuting(true)
-    try {
-      const response = await executePrompt()
-      setResult(response)
-    } catch (error) {
-      console.error('Error executing prompt:', error)
-    } finally {
-      setIsExecuting(false)
-    }
-  }
-
   return (
-    <div className="space-y-6">
-      <Tabs defaultValue="raw" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="raw">Raw Template</TabsTrigger>
-          <TabsTrigger value="filled">Filled Template</TabsTrigger>
-          <TabsTrigger value="execute">Execute</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="raw">
-          <div className="relative">
-            <Textarea
-              value={content}
-              readOnly
-              className="min-h-[400px] font-mono"
-            />
-            <Button
-              className="absolute top-2 right-2"
-              onClick={() => copyToClipboard(content, 'raw')}
-              disabled={isPending}
-            >
-              {isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Copy className="mr-2 h-4 w-4" />
-              )}
-              {copied === 'raw' ? 'Copied!' : 'Copy'}
-            </Button>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="filled">
-          <div className="relative">
-            <Textarea
-              value={filledContent}
-              readOnly
-              className="min-h-[400px] font-mono"
-            />
-            <Button
-              className="absolute top-2 right-2"
-              onClick={() => copyToClipboard(filledContent, 'filled')}
-              disabled={isPending}
-            >
-              {isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Copy className="mr-2 h-4 w-4" />
-              )}
-              {copied === 'filled' ? 'Copied!' : 'Copy'}
-            </Button>
-          </div>
-        </TabsContent>
+    <Tabs defaultValue="template">
+      <TabsList>
+        <TabsTrigger value="template">Template</TabsTrigger>
+        <TabsTrigger value="filled">Filled Template</TabsTrigger>
+        <TabsTrigger value="execute">Execute</TabsTrigger>
+      </TabsList>
 
-        <TabsContent value="execute">
-          <div className="space-y-4">
-            <div className="flex justify-end">
-              <Button 
-                onClick={handleExecute} 
-                disabled={isExecuting}
+      <TabsContent value="template">
+        <div className="relative">
+          <Button
+            variant="outline"
+            size="sm"
+            className="absolute right-4 top-4"
+            onClick={() => {
+              navigator.clipboard.writeText(content)
+
+            }}
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+          <pre className="whitespace-pre-wrap p-4 rounded bg-muted">{content}</pre>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="filled">
+        <div className="relative">
+          <div className="absolute right-4 top-4 flex flex-col gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(filledTemplate)
+              }}
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+            
+            {extractUserPrompt(filledTemplate) && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const userPrompt = extractUserPrompt(filledTemplate)
+                  if (userPrompt) {
+                    navigator.clipboard.writeText(userPrompt)
+                  }
+                }}
               >
-                {isExecuting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Play className="mr-2 h-4 w-4" />
-                )}
-                Execute
+                <div className="flex items-center gap-2">
+                  <Copy className="h-4 w-4" />
+                  <span className="text-xs">User</span>
+                </div>
               </Button>
-            </div>
-
-            {result && (
-              <Textarea
-                value={result}
-                readOnly
-                className="min-h-[400px] font-mono"
-              />
             )}
           </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+          <pre className="whitespace-pre-wrap p-4 rounded bg-muted">{filledTemplate}</pre>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="execute">
+        <div className="space-y-4">
+          <Button 
+            onClick={async () => {
+              setIsExecuting(true)
+              try {
+                const result = await executePrompt()
+                setResult(result)
+              } finally {
+                setIsExecuting(false)
+              }
+            }}
+            disabled={isExecuting}
+          >
+            {isExecuting ? "Executing..." : "Execute Prompt"}
+          </Button>
+          
+          {result && (
+            <div className="relative">
+              <Button
+                variant="outline"
+                size="sm"
+                className="absolute right-4 top-4"
+                onClick={() => {
+                  navigator.clipboard.writeText(result)
+                }}
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+              <pre className="whitespace-pre-wrap p-4 rounded bg-muted">{result}</pre>
+            </div>
+          )}
+        </div>
+      </TabsContent>
+    </Tabs>
   )
 } 
