@@ -18,7 +18,7 @@ export function PromptViewer({ content, renderedContent, executePrompt }: Prompt
   const [isExecuting, setIsExecuting] = useState(false)
 
   const filledTemplate = renderedContent
-    .map(msg => `<${msg.role}>${msg.content}</${msg.role}>`)
+    .map(msg => `<${msg.role}>${typeof msg.content === 'object' ? JSON.stringify(msg.content, null, 2) : msg.content}</${msg.role}>`)
     .join('\n\n')
 
   return (
