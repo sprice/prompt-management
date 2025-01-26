@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Copy } from "lucide-react"
 import { Message, MessageContent } from 'promptl-ai'
 import { extractUserPrompt } from "@/lib/utils"
+import { useToast } from "@/hooks/use-toast"
 
 interface PromptViewerProps {
   content: string;
@@ -16,6 +17,7 @@ interface PromptViewerProps {
 export function PromptViewer({ content, renderedContent, executePrompt }: PromptViewerProps) {
   const [result, setResult] = useState<string>("")
   const [isExecuting, setIsExecuting] = useState(false)
+  const { toast } = useToast()
 
   const filledTemplate = renderedContent
     .map(msg => {
@@ -38,6 +40,14 @@ export function PromptViewer({ content, renderedContent, executePrompt }: Prompt
     })
     .join('\n\n')
 
+  const handleCopy = (text: string, description: string) => {
+    navigator.clipboard.writeText(text)
+    toast({
+      description: `${description} copied to clipboard`,
+      duration: 2000,
+    })
+  }
+
   return (
     <Tabs defaultValue="template">
       <TabsList>
@@ -52,10 +62,7 @@ export function PromptViewer({ content, renderedContent, executePrompt }: Prompt
             variant="outline"
             size="sm"
             className="absolute right-4 top-4"
-            onClick={() => {
-              navigator.clipboard.writeText(content)
-
-            }}
+            onClick={() => handleCopy(content, "Template")}
           >
             <Copy className="h-4 w-4" />
           </Button>
@@ -69,11 +76,10 @@ export function PromptViewer({ content, renderedContent, executePrompt }: Prompt
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                navigator.clipboard.writeText(filledTemplate)
-              }}
+              onClick={() => handleCopy(filledTemplate, "Full template")}
             >
               <Copy className="h-4 w-4" />
+              <span className="text-xs">All Text</span>
             </Button>
             
             {extractUserPrompt(filledTemplate) && (
@@ -83,13 +89,13 @@ export function PromptViewer({ content, renderedContent, executePrompt }: Prompt
                 onClick={() => {
                   const userPrompt = extractUserPrompt(filledTemplate)
                   if (userPrompt) {
-                    navigator.clipboard.writeText(userPrompt)
+                    handleCopy(userPrompt, "User prompt")
                   }
                 }}
               >
                 <div className="flex items-center gap-2">
                   <Copy className="h-4 w-4" />
-                  <span className="text-xs">User</span>
+                  <span className="text-xs">User Prompt</span>
                 </div>
               </Button>
             )}
@@ -121,9 +127,7 @@ export function PromptViewer({ content, renderedContent, executePrompt }: Prompt
                 variant="outline"
                 size="sm"
                 className="absolute right-4 top-4"
-                onClick={() => {
-                  navigator.clipboard.writeText(result)
-                }}
+                onClick={() => handleCopy(result, "Result")}
               >
                 <Copy className="h-4 w-4" />
               </Button>

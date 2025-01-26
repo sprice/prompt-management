@@ -4,7 +4,7 @@ import "./globals.css";
 import { Suspense } from 'react'
 import { Loader2 } from "lucide-react"
 import { Header } from '@/components/Header'
-
+import { Toaster } from "@/components/ui/toaster"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,6 +38,7 @@ export default function RootLayout({
           }>
             {children}
           </Suspense>
+          <Toaster />
       </body>
     </html>
   );
