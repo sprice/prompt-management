@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Prompt Management System
+
+A modern web application for managing, organizing, and executing Large Language Model (LLM) prompts, built with Next.js 14, TypeScript, and TailwindCSS.
+
+## Features
+
+- 📚 **Prompt Library**: Organize and manage your LLM prompts in a structured way
+- 🔄 **Live Preview**: View both raw and rendered versions of your prompts
+- ⚡ **Direct Execution**: Test prompts directly within the application
+- 📋 **Easy Copying**: Quick copy functionality for both template and filled versions
+- 🎨 **Modern UI**: Clean, responsive interface built with Shadcn components
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18.x or later
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/sprice/prompt-management.git
+    cd prompt-management
+    ```
+2. Install dependencies:
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+3. Start the development server:
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+## Project Structure
+
+```
+├── prompts/                # Prompt storage directory
+│   ├── [prompt-name]/     # Individual prompt folders
+│   │   ├── prompt.md      # Prompt template
+│   │   └── config.yml     # Prompt configuration
+├── src/
+│   ├── app/               # Next.js app router pages
+│   ├── components/        # React components
+│   └── lib/              # Utility functions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Creating Prompts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prompt Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Each prompt consists of two files in its own directory under `prompts/`:
 
-## Learn More
+1. `prompt.md`: Contains the prompt template with variables in the format `{{variableName}}`
+2. `config.yml`: Contains prompt configuration including:
+   - Provider settings (OpenAI, Anthropic, etc.)
+   - Model selection
+   - Temperature and other parameters
+   - Variable definitions
 
-To learn more about Next.js, take a look at the following resources:
+### Example Configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```yaml
+provider: openai
+model: gpt-4
+temperature: 0.7
+system_message: You are an AI assistant specialized in spelling.
+user_message: How many letter R's are there in the word strawberry?
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Technologies Used
 
-## Deploy on Vercel
+- **Next.js 14**: React framework with App Router
+- **TypeScript**: Type-safe JavaScript
+- **TailwindCSS**: Utility-first CSS framework
+- **Shadcn/ui**: High-quality React components
+- **PromptL**: Prompt templating and execution
+- **AI SDK**: Integration with various LLM providers
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

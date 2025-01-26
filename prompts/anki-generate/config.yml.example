@@ -1,4 +1,6 @@
 provider: openai
-model: gpt-4
+model: o1-preview-2024-09-12
 temperature: 0.7
-context: ""
+context: |-
+  A bunch of content to be used to
+  generate some Anki cards.
