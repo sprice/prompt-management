@@ -79,7 +79,7 @@ user_message: How many letter R's are there in the word strawberry?
 - **TypeScript**: Type-safe JavaScript
 - **TailwindCSS**: Utility-first CSS framework
 - **Shadcn/ui**: High-quality React components
-- **PromptL**: Prompt templating and execution
+- **[PromptL](https://promptl.ai)**: Prompt templating and execution
 - **AI SDK**: Integration with various LLM providers
 
 ## Contributing
